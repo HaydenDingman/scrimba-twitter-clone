@@ -80,6 +80,26 @@ button{
     margin: 15px 0;
 }
 
+.user-info {
+    display:flex;
+    align-items:flex-start;
+    justify-content: space-between;
+    margin:0;
+    padding: 0;
+}
+
+.delete-btn {
+    padding:0;
+    margin: 0;
+    font-size: .75rem;
+    color: #555;
+}
+
+.delete-btn:hover {
+    color: red;
+    font-weight:800;
+}
+
 .tweet-inner{
     display: flex;
     align-items: flex-start;
@@ -110,6 +130,7 @@ button{
     font-weight: 500;
     color: #555;
     margin-top: 0;
+    margin-bottom: 0;
 }
 
 .tweet-text{

@@ -14,6 +14,9 @@ document.addEventListener('click', function(e){
     else if(e.target.id === 'tweet-btn'){
         handleTweetBtnClick()
     }
+    else if (e.target.dataset.owned) {
+        handleDeleteBtnClick(e.target.dataset.owned)
+    }
 })
  
 function handleLikeClick(tweetId){ 
@@ -63,12 +66,18 @@ function handleTweetBtnClick(){
             replies: [],
             isLiked: false,
             isRetweeted: false,
+            isOwned: true,
             uuid: uuidv4()
         })
     render()
     tweetInput.value = ''
     }
+}
 
+function handleDeleteBtnClick(deleteId) {
+    const indexToDelete = tweetsData.map( tweet => {return tweet.uuid} ).indexOf(deleteId);
+    tweetsData.splice(indexToDelete, 1);
+    render();
 }
 
 function getFeedHtml(){
@@ -86,6 +95,11 @@ function getFeedHtml(){
         
         if (tweet.isRetweeted){
             retweetIconClass = 'retweeted'
+        }
+
+        let ownedTweetClass = "hidden";
+        if (tweet.isOwned) {
+            ownedTweetClass = '';
         }
         
         let repliesHtml = ''
@@ -112,7 +126,10 @@ function getFeedHtml(){
     <div class="tweet-inner">
         <img src="${tweet.profilePic}" class="profile-pic">
         <div>
-            <p class="handle">${tweet.handle}</p>
+            <div class="user-info">
+                <p class="handle">${tweet.handle}</p>
+                <p class="delete-btn ${ownedTweetClass}" data-owned="${tweet.uuid}">X</p>
+            </div>
             <p class="tweet-text">${tweet.tweetText}</p>
             <div class="tweet-details">
                 <span class="tweet-detail">
