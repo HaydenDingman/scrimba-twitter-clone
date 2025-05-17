@@ -122,6 +122,7 @@ function handleRespondClick(respondId) {
                     tweetText: responseInput.value,
                 })
                 modalContainer.classList.add("hidden");
+                responseInput.value = "";
                 render();
             }
         } else if (e.target.id === "overlay" || e.target.id === "modal-close-btn") {
