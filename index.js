@@ -17,6 +17,9 @@ document.addEventListener('click', function(e){
     else if (e.target.dataset.owned) {
         handleDeleteBtnClick(e.target.dataset.owned)
     }
+    else if (e.target.dataset.respond) {
+        handleRespondClick(e.target.dataset.respond);
+    }
 })
  
 function handleLikeClick(tweetId){ 
@@ -78,6 +81,56 @@ function handleDeleteBtnClick(deleteId) {
     const indexToDelete = tweetsData.map( tweet => {return tweet.uuid} ).indexOf(deleteId);
     tweetsData.splice(indexToDelete, 1);
     render();
+}
+
+function handleRespondClick(respondId) {
+    const modalContainer = document.getElementById("modal-container");
+
+    // Grab tweet that's being replied to and insert before the text field
+    const tweetToRespond = tweetsData[tweetsData.map( tweet => { return tweet.uuid} ).indexOf(respondId)];
+    const responseHTML = `<div class="overlay" id="overlay"></div>
+			            <div class="modal" id="modal">
+                            <p class="modal-close-btn" id="modal-close-btn">X</p>
+                            <div class="tweet-inner">
+                                <img src="${tweetToRespond.profilePic}" class="profile-pic">
+                                <div>
+                                    <p class="handle">${tweetToRespond.handle}</p>
+                                    <p class="tweet-text">${tweetToRespond.tweetText}</p>
+                                </div>
+                            </div>
+                            <div class="tweet-input-area">
+                                <img src="images/scrimbalogo.png" class="profile-pic">
+                                <textarea placeholder="Reply..." id="tweet-response-input"></textarea>
+                            </div>
+                            <button id="tweet-reply-btn">Reply</button>
+                        </div>`
+
+    modalContainer.innerHTML = responseHTML;
+
+    modalContainer.classList.toggle("hidden");
+    const responseInput = document.getElementById("tweet-response-input");
+    responseInput.focus();
+
+    // Handling clicks within the modal
+    modalContainer.addEventListener("click", (e) => {
+        console.log(e.target)
+        if (e.target.id === "tweet-reply-btn") {
+            if (responseInput.value) {
+                tweetToRespond.replies.unshift({
+                    handle: `@Scrimba`,
+                    profilePic: `images/scrimbalogo.png`,
+                    tweetText: responseInput.value,
+                })
+                modalContainer.classList.add("hidden");
+                render();
+            }
+        } else if (e.target.id === "overlay" || e.target.id === "modal-close-btn") {
+            e.stopPropagation();
+            modalContainer.classList.add("hidden");
+        }
+    })
+
+
 }
 
 function getFeedHtml(){
@@ -149,6 +202,9 @@ function getFeedHtml(){
                     data-retweet="${tweet.uuid}"
                     ></i>
                     ${tweet.retweets}
+                </span>
+                <span class="tweet-detail">
+                <i class="fa-solid fa-reply" data-respond="${tweet.uuid}"></i>
                 </span>
             </div>   
         </div>            
